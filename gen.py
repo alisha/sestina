@@ -1,4 +1,5 @@
 import json, random
+import secret
 from pprint import pprint
 
 # Build corpus
