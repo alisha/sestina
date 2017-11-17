@@ -54,13 +54,34 @@ grammar.add_modifiers(base_english)
 print grammar.flatten("#origin#")
 
 # Build a poem
+# Stanzas 1-5
 for stanza in xrange(0,6):
-  for line in xrange(0,6):
-    # This word must occur at the end of the line
-    special_word = repeated_words[poem_structure[stanza][line] - 1]
-    rules['object'] = special_word
-    grammar = tracery.Grammar(rules)
-    grammar.add_modifiers(base_english)
-    print grammar.flatten("#origin#")
+  line = 0
+  while line < 6:
+    if stanza != 5:
+      # This word must occur at the end of the line
+      special_word = repeated_words[poem_structure[stanza][line] - 1]
+
+      # Generate Tracery rules
+      rules['object'] = special_word
+      grammar = tracery.Grammar(rules)
+      grammar.add_modifiers(base_english)
+      print grammar.flatten("#origin#")
+
+    # Last stanza has a special structure
+    else:
+      # Generate Tracery rules
+      rules['origin'] = 'The #occupation# #verb# #object1.a# and #object2.a#'
+      rules['object1'] = repeated_words[poem_structure[stanza][line] - 1]
+      rules['object2'] = repeated_words[poem_structure[stanza][line + 1] - 1]
+
+      rules['object'] = special_word
+      grammar = tracery.Grammar(rules)
+      grammar.add_modifiers(base_english)
+      print grammar.flatten("#origin#")
+
+      line += 1
+
+    line += 1
 
   print "\n"
