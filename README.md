@@ -8,6 +8,11 @@ A [sestina poem](https://en.wikipedia.org/wiki/Sestina) is a poem that features 
 
 The `absurdist-unity.py` file generates sestina poems that shows the unity among various people through the objects they use.
 
+To generate your own poems (which will be located in `absurdist-unity.txt`), run:
+```
+python absurdist-unity.py
+```
+
 Here's one example:
 
     The filling machine operator poured a sandglass
