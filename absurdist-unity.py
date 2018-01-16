@@ -14,11 +14,11 @@ one_word_corpus = [x for x in corpus if x.count(' ') == 0]
 # Grab six words from corpus, will be at the end of each line
 # Right now these will just be nouns
 # TODO: add support for other types of words
-repeated_words = []
-for x in xrange(0,6):
-  index = random.randrange(len(one_word_corpus))
-  repeated_words.append(one_word_corpus[index])
-  del one_word_corpus[index]
+repeated_words = [''] * 6
+def generate_repeated_words(repeated_words):
+  for x in xrange(0,6):
+    index = random.randrange(len(one_word_corpus))
+    repeated_words[x] = one_word_corpus[index]
 
 # Get occupations
 occupations = json.load(open('data/humans/occupations.json'))['occupations']
@@ -54,7 +54,13 @@ rules = {
 f = open('absurdist-unity', 'w')
 
 total_words = 0
+
 while total_words < 50000:
+  generate_repeated_words(repeated_words);
+
+  # Title
+  f.write("A Tale of " + repeated_words[random.randrange(len(repeated_words))] + " and " + repeated_words[random.randrange(len(repeated_words))] + "\n\n")
+
   # Stanzas 1-5
   for stanza in xrange(0,6):
     line_num = 0
@@ -62,9 +68,10 @@ while total_words < 50000:
     while line_num < 6:
       if stanza != 5:
         # This word must occur at the end of the line
-        special_word = repeated_words[poem_structure[stanza][line_num] - 1]
+        special_word = repeated_words[poem_structure[stanza - 1][line_num - 1] - 1]
 
         # Generate Tracery rules
+        rules['origin'] = 'The #occupation# #verb# #object.a#'
         rules['object'] = special_word
         grammar = tracery.Grammar(rules)
         grammar.add_modifiers(base_english)
@@ -74,8 +81,8 @@ while total_words < 50000:
       else:
         # Generate Tracery rules
         rules['origin'] = 'The #occupation# #verb# #object1.a# and #object2.a#'
-        rules['object1'] = repeated_words[poem_structure[stanza][line_num] - 1]
-        rules['object2'] = repeated_words[poem_structure[stanza][line_num + 1] - 1]
+        rules['object1'] = repeated_words[poem_structure[stanza - 1][line_num - 1] - 1]
+        rules['object2'] = repeated_words[poem_structure[stanza - 1][line_num] - 1]
 
         rules['object'] = special_word
         grammar = tracery.Grammar(rules)
@@ -89,6 +96,8 @@ while total_words < 50000:
       line_num += 1
 
     f.write("\n")
+
+  f.write("\n\n")
 
 f.write("\nTOTAL WORDS: " + str(total_words))
 f.close()
